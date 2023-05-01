@@ -1,9 +1,9 @@
 {
-  "name": "matrix-crdt",
+  "name": "@unimo/matrix-crdt",
   "description": "",
-  "homepage": "https://github.com/YousefED/matrix-crdt",
+  "homepage": "https://github.com/unimo-app/matrix-crdt/",
   "author": {
-    "name": "Yousef El-Dardiry"
+    "name": "Yousef El-Dardiry + unimo team"
   },
   "type": "module",
   "version": "0.2.0",
