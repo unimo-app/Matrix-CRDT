@@ -70,7 +70,7 @@ export class MatrixReader extends lifecycle.Disposable {
   private matrixRoomListener = (
     _event: any,
     _room: any,
-    _toStartOfTimeline: boolean
+    _toStartOfTimeline: boolean | undefined
   ) => {
     console.error("not expected; Room.timeline on MatrixClient");
     // (disable error when testing / developing e2ee support,
@@ -119,9 +119,9 @@ export class MatrixReader extends lifecycle.Disposable {
     const events = await Promise.all(
       rawEvents.map(async (event: any) => {
         if (event.type === "m.room.encrypted") {
-          const decrypted = (
-            await this.matrixClient.crypto.decryptEvent(new MatrixEvent(event))
-          ).clearEvent;
+          const decrypted = await this.matrixClient.decryptEventIfNeeded(
+            new MatrixEvent(event)
+          );
           return decrypted;
         } else {
           return event;
@@ -144,7 +144,6 @@ export class MatrixReader extends lifecycle.Disposable {
     }
     try {
       this.pendingPollRequest = this.matrixClient.http.authedRequest(
-        undefined as any,
         Method.Get,
         "/events",
         {
@@ -229,7 +228,7 @@ export class MatrixReader extends lifecycle.Disposable {
         }
       }
 
-      token = res.end;
+      token = res.end !== undefined ? res.end : "";
       if (!this.latestToken) {
         this.latestToken = res.start;
       }

@@ -3,8 +3,7 @@
   "private": true,
   "license": "MPL-2.0",
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "packages/*"
   ],
   "scripts": {
     "install-lerna": "npm install --no-package-lock",

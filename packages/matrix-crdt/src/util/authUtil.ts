@@ -6,6 +6,10 @@ import { verifySignature } from "./olmlib";
  * Sign an object (obj) with the users ed25519 key
  */
 export async function signObject(client: MatrixClient, obj: any) {
+  if (!client.crypto) {
+    throw new Error("MatrixClient.crypto is not initialized");
+  }
+  // let cBackend = client.getCrypto();
   await client.crypto.signObject(obj);
 }
 
@@ -38,9 +42,19 @@ export async function verifyObject(
   }
   const deviceToGet = keyToGet.substr("ed25519:".length);
 
+  if (!client.crypto) {
+    throw new Error("MatrixClient.crypto is not initialized");
+  }
+
   client.crypto.deviceList.startTrackingDeviceList(userId);
-  const keys = await client.crypto.deviceList.downloadKeys([userId], false);
-  const deviceKey = keys[userId][deviceToGet].keys[keyToGet];
+  const donwloadedKeys = await client.crypto.deviceList.downloadKeys(
+    [userId],
+    false
+  );
+  const deviceKey = donwloadedKeys.get(userId)?.get(deviceToGet)?.keys[
+    keyToGet
+  ];
+  // const deviceKey = donwloadedKeys[userId][deviceToGet].keys[keyToGet];
   if (!deviceKey) {
     throw new Error("key not found");
   }

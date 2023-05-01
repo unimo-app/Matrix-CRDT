@@ -9,7 +9,7 @@ const request = require("request");
 
 export function initMatrixSDK() {
   // make sure the matrix sdk initializes request properly
-  Matrix.request(request);
+  // Matrix.request(request);
 }
 
 http.globalAgent.maxSockets = 2000;
@@ -55,7 +55,6 @@ export async function createMatrixUser(username: string, password: string) {
     // userId: user_id,
     // deviceId: device_id,
   });
-  let request = Matrix.getRequest();
   let sessionId = "";
   // first get a session_id. this is returned in a 401 response :/
   try {
