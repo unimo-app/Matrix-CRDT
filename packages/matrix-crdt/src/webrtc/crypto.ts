@@ -6,6 +6,13 @@ import * as promise from "lib0/promise";
 import * as error from "lib0/error";
 import * as string from "lib0/string";
 
+const isBrowser =
+  typeof window !== "undefined" && typeof window.document !== "undefined";
+export let crypto = isBrowser ? global.window?.crypto : require("crypto");
+export let subtleCrypto = isBrowser
+  ? global.window?.crypto?.subtle
+  : require("crypto")?.subtle;
+
 /**
  * @param {string} secret
  * @param {string} roomName
@@ -16,7 +23,7 @@ export const deriveKey = (secret: string, roomName: string) => {
   const salt = string.encodeUtf8(roomName).buffer;
   return crypto.subtle
     .importKey("raw", secretBuffer, "PBKDF2", false, ["deriveKey"])
-    .then((keyMaterial) =>
+    .then((keyMaterial: any) =>
       crypto.subtle.deriveKey(
         {
           name: "PBKDF2",
@@ -54,7 +61,7 @@ export const encrypt = async (data: Uint8Array, key?: CryptoKey) => {
       key,
       data
     )
-    .then((cipher) => {
+    .then((cipher: Iterable<number>) => {
       const encryptedDataEncoder = encoding.createEncoder();
       encoding.writeVarString(encryptedDataEncoder, "AES-GCM");
       encoding.writeVarUint8Array(encryptedDataEncoder, iv);
@@ -99,7 +106,7 @@ export const decrypt = async (data: Uint8Array, key?: CryptoKey) => {
       key,
       cipher
     )
-    .then((data) => new Uint8Array(data));
+    .then((data: Iterable<number>) => new Uint8Array(data));
 };
 
 /**
