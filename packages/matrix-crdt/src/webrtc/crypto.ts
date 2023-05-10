@@ -8,10 +8,10 @@ import * as string from "lib0/string";
 
 const isBrowser =
   typeof window !== "undefined" && typeof window.document !== "undefined";
-export let crypto = isBrowser ? global.window?.crypto : require("crypto");
+export let crypto = isBrowser ? window?.crypto : global["crypto"];
 export let subtleCrypto = isBrowser
-  ? global.window?.crypto?.subtle
-  : require("crypto")?.subtle;
+  ? window?.crypto?.subtle
+  : global["crypto"].subtle;
 
 /**
  * @param {string} secret
@@ -61,7 +61,7 @@ export const encrypt = async (data: Uint8Array, key?: CryptoKey) => {
       key,
       data
     )
-    .then((cipher: Iterable<number>) => {
+    .then((cipher) => {
       const encryptedDataEncoder = encoding.createEncoder();
       encoding.writeVarString(encryptedDataEncoder, "AES-GCM");
       encoding.writeVarUint8Array(encryptedDataEncoder, iv);
@@ -106,7 +106,7 @@ export const decrypt = async (data: Uint8Array, key?: CryptoKey) => {
       key,
       cipher
     )
-    .then((data: Iterable<number>) => new Uint8Array(data));
+    .then((data) => new Uint8Array(data));
 };
 
 /**
