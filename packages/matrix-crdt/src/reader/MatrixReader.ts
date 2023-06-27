@@ -58,8 +58,8 @@ export class MatrixReader extends lifecycle.Disposable {
    */
   private matrixRoomListener = (
     event: MatrixEvent,
-    room: Room,
-    _toStartOfTimeline: boolean
+    room: Room | undefined,
+    toStartOfTimeline: boolean | undefined
   ) => {
     // TODO: for e2ee support we now call `startClient`.
     // For rooms we've joined, the client will now get messages here, but also by polling /events.
